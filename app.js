@@ -134,14 +134,18 @@ app.use(app.router);
 var optimize = (node_env !== "development"),
     tmpDir = path.join( require("os").tmpDir(), "mozilla.webmaker.org");
 
-app.use(lessMiddleWare({
+app.use(lessMiddleWare(WWW_ROOT, {
   once: optimize,
   debug: !optimize,
   dest: tmpDir,
-  src: WWW_ROOT,
-  compress: true,
-  yuicompress: optimize,
-  optimization: optimize ? 0 : 2
+  parser: {
+    relativeUrls: true,
+  },
+  compiler: {
+    compress: optimize,
+    sourceMap: optimize,
+    yuicompress: optimize
+  }
 }));
 
 app.use( express.static(tmpDir));
